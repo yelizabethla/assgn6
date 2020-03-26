@@ -1,7 +1,6 @@
 
+
 // update price based on the quantity of item the customer wants to buy
-
-
 function updatePrice() {
     var input = Number(document.getElementById('quantity').value);
     var currentlist = document.getElementById('product-price').innerHTML.split(" ");
@@ -10,6 +9,8 @@ function updatePrice() {
     document.getElementById('product-price').innerHTML = "$ " + update;
 }
 
+
+// initialize cart and wishlist
 var items;
 var wishs;
 
@@ -27,6 +28,7 @@ function initCart() {
 	cartIcon();
 }
 
+//count # items by checking quantity of each item added to cart
 function countItems() {
 	items = JSON.parse(localStorage.getItem("cartItems")); 
 	var count = 0;
@@ -36,14 +38,17 @@ function countItems() {
 	return count;
 }
 
+//cart icon should idicate # items in cart
 function cartIcon() {
 	var num = countItems();
 	document.getElementById("cart").setAttribute("src", 'cart' + String(num) + '.png');
 }
 
+//add to cart button on products page
 function addCart() {
 	selectedS = document.getElementById('size').value;
 	selectedC = document.getElementById('color').value;
+	//make sure all fields are filled out
 	if (selectedS === "") {
 		alert("Please select the size before adding to cart!");
 	}
@@ -51,18 +56,22 @@ function addCart() {
 		alert("Please select the color before adding to cart!");
 	}
 	else {
+		//give feedback to user
 		document.getElementById("add2cart").textContent = "Added!";
 		document.getElementById('add2cart').disabled = 'disabled';
+		//save info in dictionary
 		items = JSON.parse(localStorage.getItem("cartItems")); 
 			items[document.getElementById('product-name').innerHTML.split(" ")[1] + " " 
 			+ document.getElementById('product-name').innerHTML.split(" ")[2]] = 
 			[selectedS, selectedC, Number(document.getElementById('quantity').value),
 			Number(document.getElementById('product-price').innerHTML.split(" ")[1])];
 		localStorage.setItem("cartItems", JSON.stringify(items));
+		//update icon
 		cartIcon();
 	}
 }
 
+//similar to addCart()
 function addWish() {
 	document.getElementById("add2wish").textContent = "Added!";
 	document.getElementById('add2wish').disabled = 'disabled';
@@ -75,18 +84,22 @@ function addWish() {
 }
 
 function removeCart(x) {
+	//feedback to user
 	document.getElementById(x).textContent = "Removed!";
 	document.getElementById(x).disabled = 'disabled';
 	items = JSON.parse(localStorage.getItem("cartItems")); 
 	num = Number(x[(x.length)-1]);
 	count = 0;
 	for (var i in items) {
+		//figure out which item is being removed
 		if (count === num) {
 			delete items[i];
 		}
 		count += 1;
 	}
+	//update localStorage 
 	localStorage.setItem("cartItems", JSON.stringify(items));
+	//update icon
 	cartIcon();
 }
 
@@ -110,15 +123,19 @@ function displayItems() {
 	items = JSON.parse(localStorage.getItem("cartItems")); 
 	var shown = document.getElementById("shopping-cart");
 	var count = 0;
+	//depends on how many different items were added to cart
 	for (var i in items) {
+		//product pic
 		itemPic= document.createElement("img");
 		itemPic.setAttribute("src", findPic(i));
 		itemPic.setAttribute("width", "30%");
 		itemPic.setAttribute("hspace", "45");
 		itemPic.id = "itemp" + String(count);
+		//product info
 		itemDes = document.createElement("p");
 		itemDes.innerHTML = editTxt(i);
 		itemDes.id = "itemd" + String(count); 
+		//button to delete
 		itemBut = document.createElement("button");
 		itemBut.innerHTML = "Remove from Cart";
 		itemBut.id = "itemr" + String(count);
@@ -178,6 +195,7 @@ function wishTxt(x) {
 }
 
 function calculateTotal() {
+	//need to calculate to display
 	numItems = countItems();
 	price = 0;
 	items = JSON.parse(localStorage.getItem("cartItems")); 
@@ -185,7 +203,7 @@ function calculateTotal() {
 		price += items[i][3];
 	}
 	subTotal = price + 9;
-
+	//actual displaying
 	var shown = document.getElementById("total");
 	merch = document.createElement("p");
 	merch.innerHTML = "Merchandise (" + String(numItems) + " items): $" + String(price);
